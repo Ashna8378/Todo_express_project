@@ -15,14 +15,14 @@ async function getAllTasks(req,res){
 
 async function addTask(req,res){
     const {task} = req.body
-    const newTask = new Todo({task})
+    const newTask = new Todo({task: task, completed:false})
     const savedTask = await newTask.save()
 
     if(savedTask){
         res.json(savedTask)
     }
     else{
-        res.status(500).json({message: "ERror adding task"})
+        res.status(500).json({message: "Error adding task"})
     }
 }
 
