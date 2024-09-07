@@ -7,7 +7,7 @@ const router = express.Router()
 
 router.get("/get", getAllTasks)
 router.get("/post", addTask)
-router.get("/delete", deleteTask)
+router.get("/delete/:id", deleteTask)
 
 export default router
 

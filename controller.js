@@ -1,4 +1,4 @@
-import Todo from "./schemas";
+import Todo from "./schemas.js";
 
 
 // get all tasks

@@ -15,7 +15,7 @@ const todoSchema = new mongoose.Schema({
 
 // create the model from the schema
 
-const Todo = mongoose.model(Todo,todoSchema)
+const Todo = mongoose.model('Todo',todoSchema)
 
 export default Todo
 
