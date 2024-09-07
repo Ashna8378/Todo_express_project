@@ -97,6 +97,39 @@
         .delete-btn:hover {
             background-color: #c0392b;
         }
+
+
+
+        /* Style for the table inside the #table div */
+#table table {
+    width: 100%;
+    border-collapse: collapse; /* Removes gaps between table cells */
+    margin-top: 20px;
+}
+
+#table th, #table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+#table th {
+    background-color: #333;
+    color: white;
+}
+
+#table td {
+    background-color: #f9f9f9;
+}
+
+#table tr:nth-child(even) td {
+    background-color: #f4f4f4;
+}
+
+#table tr:hover td {
+    background-color: #eaeaea;
+}
+
     </style>
 </head>
 <body>
@@ -104,17 +137,111 @@
     <div class="container">
         <h1>My To-Do List</h1>
         
-        <form id="task-form">
+        <form id="task-form" >
             <input type="text" id="task-input" placeholder="Enter a new task" required>
-            <button type="submit">Add Task</button>
+            <button type="button" onclick="postTask()">Add Task</button>
         </form>
         
-        <ul id="task-list">
-            <!-- Tasks will be dynamically added here -->
-        </ul>
+      <div id="table">
+
+      </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        async function renderTable(data={}){
+            let table = `
+            <table>
+                <tr>
+                    <th>Task</th>
+                    <th>Deleted</th>
+                    
+                   
+                </tr>
+                
+            `;
+
+            for(let i = 0; i < data.length;i++){
+                console.log(i)
+                table = table + `<tr>
+                    <td>${data[i].task}</td>
+                    <td> <button style="background-color:red">Delete</button></td>
+                
+                </tr>`
+            }
+            table = table + `</table>` ;
+
+            document.getElementById('table').innerHTML = table;
+            
+        }
+        
+     
+        
+        
+        async function getTask() {
+            await fetch("http://localhost:4000/get") // Include the protocol (http://)
+            .then((res) => res.json()) // Return the JSON response
+            .then((data) => {
+                console.log(data); // Log the fetched data
+                renderTable(data)
+            })
+            .catch((error) => {
+                console.error("Error fetching tasks:", error); // Handle any errors
+            });
+        }
+        
+        getTask();
+        
+
+        async function postTask() {
+            const task = document.getElementById("task-input").value;
+            console.log(task);
+        
+            await fetch("http://localhost:4000/post", { 
+                method: "POST", // Method should be in uppercase
+                headers: {
+                    "Content-Type": "application/json" // Set the correct content type
+                },
+                body: JSON.stringify({ // Convert the body to a JSON string
+                    task: task
+                })
+            })
+            .then((res) => res.json()) // Return the JSON response
+            .then((data) => {
+                console.log(data); // Log the fetched data
+                getTask()
+            })
+            .catch((error) => {
+                console.error("Error posting task:", error); // Handle any errors
+            });
+            
+        }
+
+
+        async function deleteTask(taskId) {
+            await fetch(`http://localhost:4000/delete/${taskId}`, {
+                method: "DELETE", // Specify the DELETE method
+                headers: {
+                    "Content-Type": "application/json" // Set the content type, if needed
+                }
+            })
+            .then((res) => {
+                if (!res.ok) { // Check if the response is not OK
+                    throw new Error("Network response was not ok");
+                }
+                return res.json(); // Return the JSON response
+            })
+            .then((data) => {
+                console.log("Task deleted:", data); // Log the response data
+            })
+            .catch((error) => {
+                console.error("Error deleting task:", error); // Handle any errors
+            });
+        }
+               
+
+
+        
+    </script>
 
 </body>
 </html>
