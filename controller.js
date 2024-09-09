@@ -40,4 +40,26 @@ async function deleteTask(req,res){
     }
 }
 
-export {getAllTasks, addTask, deleteTask}
+
+// update an existing task
+
+async function updateTask(req, res) {
+    const { id } = req.params;
+    const { task, completed } = req.body;
+
+    const updatedTask = await Todo.findByIdAndUpdate(
+        id,
+        { task, completed },
+        { new: true } // This returns the updated document
+    );
+
+    if (updatedTask) {
+        res.json(updatedTask);
+    } else {
+        res.status(404).json({ message: "Task not found" });
+    }
+}
+
+
+
+export {getAllTasks, addTask, deleteTask, updateTask}
